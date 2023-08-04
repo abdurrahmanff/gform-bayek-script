@@ -1,6 +1,6 @@
 const cheerio = require('cheerio');
 const axios = require('axios');
-const { answers, baseUrl } = require('./data');
+const { answers, baseUrl, targetTime } = require('./data');
 
 const getQuestions = async (url) => {
   const response = await axios.get(url);
@@ -67,7 +67,6 @@ const main = async () => {
     finalUrls.push(await adjustUrl(baseUrl, answer));
   }
 
-  const targetTime = '2023-07-30T07:26:30'; // Replace with your desired date and time
   runAtSpecificTime(targetTime, async () => {
     for (let finalUrl of finalUrls) {
       submitForm(finalUrl);

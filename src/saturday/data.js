@@ -49,4 +49,6 @@ const answers = [
 const baseUrl =
   'https://docs.google.com/forms/d/e/1FAIpQLSffIWgmhdjI_7yrFErgS_zeYahwF7I7n2sRSRYztolUDj-CzA/viewform?usp=sf_link';
 
-module.exports = { answers, baseUrl };
+const targetTime = '2023-07-30T07:26:30';
+
+module.exports = { answers, baseUrl, targetTime };
