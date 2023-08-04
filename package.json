@@ -9,6 +9,7 @@
     "puppeteer": "^20.9.0"
   },
   "scripts": {
-    "start": "node src/xdd.js"
+    "start-saturday": "node src/saturday/script.js",
+    "start-sunday": "node src/sunday/script.js"
   }
 }

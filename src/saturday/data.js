@@ -46,4 +46,7 @@ const answers = [
   },
 ];
 
-module.exports = answers;
+const baseUrl =
+  'https://docs.google.com/forms/d/e/1FAIpQLSffIWgmhdjI_7yrFErgS_zeYahwF7I7n2sRSRYztolUDj-CzA/viewform?usp=sf_link';
+
+module.exports = { answers, baseUrl };
