@@ -38,7 +38,6 @@ async function adjustUrl(url, answers) {
   const params = new URLSearchParams(answersObject).toString();
 
   const finalUrl = url.replace('viewform', 'formResponse') + '&' + params;
-  console.log(finalUrl);
   return finalUrl;
 }
 
