@@ -10,15 +10,18 @@ const getQuestions = async (url) => {
   const questionStringsRaw = content.match(/[,]["][\w\s\/(),]+["][,]/g);
   const questionStrings = questionStringsRaw
     .map((question) => question.replaceAll(',', '').replaceAll('"', ''))
-    .splice(0, questionStringsRaw.length - 2);
+    .splice(0, questionStringsRaw.length - 3);
 
   const questionIdsRaw = content.match(/(?<=\[\[)(\d+)/g);
-  const questionIds = questionIdsRaw.map((id) => 'entry.' + id).splice(1);
+  const questionIds = questionIdsRaw
+    .map((id) => 'entry.' + id)
+    .splice(0, questionStringsRaw.length - 3);
 
   let questionsObject = {};
   for (let i = 0; i < questionIds.length; i++) {
     questionsObject[questionStrings[i]] = questionIds[i];
   }
+
   return questionsObject;
 };
 
@@ -66,6 +69,8 @@ const main = async () => {
   for (let answer of answers) {
     finalUrls.push(await adjustUrl(baseUrl, answer));
   }
+
+  console.log(finalUrls);
 
   runAtSpecificTime(targetTime, async () => {
     for (let finalUrl of finalUrls) {

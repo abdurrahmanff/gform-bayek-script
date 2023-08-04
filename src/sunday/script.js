@@ -13,7 +13,9 @@ const getQuestions = async (url) => {
     .splice(0, questionStringsRaw.length - 2);
 
   const questionIdsRaw = content.match(/(?<=\[\[)(\d+)/g);
-  const questionIds = questionIdsRaw.map((id) => 'entry.' + id).splice(1);
+  const questionIds = questionIdsRaw
+    .map((id) => 'entry.' + id)
+    .splice(1, questionIdsRaw.length - 2);
 
   let questionsObject = {};
   for (let i = 0; i < questionIds.length; i++) {
@@ -36,6 +38,7 @@ async function adjustUrl(url, answers) {
   const params = new URLSearchParams(answersObject).toString();
 
   const finalUrl = url.replace('viewform', 'formResponse') + '&' + params;
+  console.log(finalUrl);
   return finalUrl;
 }
 
