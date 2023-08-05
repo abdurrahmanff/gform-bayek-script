@@ -15,7 +15,7 @@ const getQuestions = async (url) => {
   const questionIdsRaw = content.match(/(?<=\[\[)(\d+)/g);
   const questionIds = questionIdsRaw
     .map((id) => 'entry.' + id)
-    .splice(0, questionStringsRaw.length - 3);
+    .splice(1, questionStringsRaw.length - 3);
 
   let questionsObject = {};
   for (let i = 0; i < questionIds.length; i++) {
@@ -69,8 +69,6 @@ const main = async () => {
   for (let answer of answers) {
     finalUrls.push(await adjustUrl(baseUrl, answer));
   }
-
-  console.log(finalUrls);
 
   runAtSpecificTime(targetTime, async () => {
     for (let finalUrl of finalUrls) {
