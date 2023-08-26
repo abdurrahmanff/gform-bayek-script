@@ -1,31 +1,32 @@
 const cheerio = require('cheerio');
 const axios = require('axios');
-const { answers, baseUrl, targetTime } = require('./data');
+const { answers, baseUrl, targetTime, questionCount } = require('./data');
 
-const getQuestions = async (url) => {
+const getQuestions = async (url, questionCount) => {
   const response = await axios.get(url);
   const page = cheerio.load(response.data);
   const content = page('body script').text();
 
-  const questionStringsRaw = content.match(/[,]["][\w\s\/(),]+["][,]/g);
+  const questionStringsRaw = content.match(/[,]["][\w\s\/(),-.]+["][,]/g);
   const questionStrings = questionStringsRaw
-    .map((question) => question.replaceAll(',', '').replaceAll('"', ''))
-    .splice(0, questionStringsRaw.length - 2);
+    .map((question) => question.replaceAll(',', '').replaceAll('"', '').trim())
+    .splice(0, questionCount);
 
   const questionIdsRaw = content.match(/(?<=\[\[)(\d+)/g);
   const questionIds = questionIdsRaw
     .map((id) => 'entry.' + id)
-    .splice(1, questionIdsRaw.length - 2);
+    .splice(1, questionCount);
 
   let questionsObject = {};
   for (let i = 0; i < questionIds.length; i++) {
     questionsObject[questionStrings[i]] = questionIds[i];
   }
+
   return questionsObject;
 };
 
-async function adjustUrl(url, answers) {
-  const questionsObject = await getQuestions(url);
+async function adjustUrl(url, answers, questionCount) {
+  const questionsObject = await getQuestions(url, questionCount);
   const questions = Object.keys(questionsObject);
 
   let answersObject = {};
@@ -37,7 +38,8 @@ async function adjustUrl(url, answers) {
 
   const params = new URLSearchParams(answersObject).toString();
 
-  const finalUrl = url.replace('viewform', 'formResponse') + '&' + params;
+  const finalUrl =
+    url.split('?')[0].replace('viewform', 'formResponse') + '?' + params;
   return finalUrl;
 }
 
@@ -66,7 +68,7 @@ const main = async () => {
   let finalUrls = [];
 
   for (let answer of answers) {
-    finalUrls.push(await adjustUrl(baseUrl, answer));
+    finalUrls.push(await adjustUrl(baseUrl, answer, questionCount));
   }
 
   runAtSpecificTime(targetTime, async () => {
